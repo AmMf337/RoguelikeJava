@@ -1,0 +1,97 @@
+package com.example.gamedemo.control;
+
+import com.example.gamedemo.screens.BaseScreen;
+import com.example.gamedemo.screens.MenuScreen;
+import com.example.gamedemo.screens.ScreeA;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.canvas.Canvas;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
+public class MainController implements Initializable {
+
+    @FXML
+    private Canvas canvas;
+    @FXML
+    private Canvas canvas2;
+    private boolean isRunning;
+
+    private boolean changeScreen;
+
+    public static int SCREEN = 0;
+
+    private ArrayList<BaseScreen> screens;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        isRunning = true;
+        changeScreen = false;
+        screens = new ArrayList<>();
+        screens.add(new ScreeA(this.canvas));
+        canvas.setFocusTraversable(true);
+
+        new Thread( () -> {
+            while (isRunning){
+                Platform.runLater( () -> {
+                    paint();
+                });
+                pause(50);
+            }
+
+        }).start();
+
+        initEvents();
+    }
+
+    public void paint(){
+        if (SCREEN < screens.size())
+            screens.get(SCREEN).paint();
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
+
+    public void initEvents(){
+        canvas.setOnKeyPressed(event -> {
+            screens.get(SCREEN).onKeyPressed(event);
+        });
+
+        canvas.setOnKeyReleased(event -> {
+            screens.get(SCREEN).onKeyReleased(event);
+        });
+
+        canvas.setOnMousePressed(event -> {
+            screens.get(SCREEN).onMousePressed(event);
+        });
+        canvas.setOnMousePressed(event -> {
+            if (SCREEN == 0) {
+                screens.get(0).onMousePressed(event);
+            } else {
+                screens.get(SCREEN).onMousePressed(event);
+            }
+        });
+        if (SCREEN == 0 && screens.get(SCREEN).isBottonPressed1()) {
+            screens.add(new ScreeA(this.canvas));
+            changeScreen(1); // Cambia a la pantalla ScreeA
+        }
+
+    }
+
+    private void pause(int time){
+        try {
+            Thread.sleep(time);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+    public void changeScreen(int screenIndex) {
+        if (screenIndex >= 0 && screenIndex < screens.size()) {
+            SCREEN = screenIndex;
+        }
+    }
+}
