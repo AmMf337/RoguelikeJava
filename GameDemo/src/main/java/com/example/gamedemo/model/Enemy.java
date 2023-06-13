@@ -55,14 +55,14 @@ public class Enemy extends Thread{
 
         }else if(distance<300){
             if(avatarPosition.getX()>this.position.getX()){
-                position.setX(position.getX()+5);
+                position.setX(position.getX()+4);
             }else if(avatarPosition.getX()<this.position.getX()){
-                position.setX(position.getX()-5);
+                position.setX(position.getX()-4);
             }
             if(avatarPosition.getY()>this.position.getY()){
-                position.setY(position.getY()+5);
+                position.setY(position.getY()+4);
             }else if(avatarPosition.getY()<this.position.getY()){
-                position.setY(position.getY()-5);
+                position.setY(position.getY()-4);
             }
         }
 

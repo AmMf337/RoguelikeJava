@@ -85,7 +85,7 @@ public class ScreeA extends BaseScreen {
     }
 
     public void generateEnemies() {
-        int numberEnemies = (int) (Math.random() * (3 - 1 + 1) + 1);
+        int numberEnemies = (int) (Math.random() * (4 - 2 + 1) + 2);
         int numberEnemies2 = (int) (Math.random() * (5 -4 + 1) + 4);
         for (int i = 0; i < numberEnemies; i++) {
             int positionx = (int) (Math.random() * 1221) + 350;
@@ -218,37 +218,40 @@ public class ScreeA extends BaseScreen {
                 }
             }
             for (int i = 0; i < enemies.size(); i++) {
+                Enemy actualEnemy = enemies.get(i);
+                double distance2 = Math.sqrt(
+                        Math.pow(actualEnemy.getPosition().getX() - avatar.getPosition().getX(), 2) +
+                                Math.pow(actualEnemy.getPosition().getY() - avatar.getPosition().getY(), 2)
+                );
+                if (distance2 <= 20) {
+                    actualEnemy.setContactAvatar(true);
+                    if (lifeLossTimer >= LIFE_LOSS_INTERVAL) {
+                        avatar.setLife(avatar.getLife() - 1);
+                        lifeLossTimer = 0;
+                        if (avatar.getLife() <= 0) {
+                            gameOver = true;
+                        }
+                    }
+                }else{
+                    actualEnemy.setContactAvatar(false);
+                }
+
                 for (int j = 0; j < bullets.size(); j++) {
 
-                    Enemy actualEnemy = enemies.get(i);
+
                     Bullet actualBullet = bullets.get(j);
 
                     double distance = Math.sqrt(
                             Math.pow(actualEnemy.getPosition().getX() - actualBullet.getPositionX(), 2) +
                                     Math.pow(actualEnemy.getPosition().getY() - actualBullet.getPositionY(), 2)
                     );
-                    double distance2 = Math.sqrt(
-                            Math.pow(actualEnemy.getPosition().getX() - avatar.getPosition().getX(), 2) +
-                                    Math.pow(actualEnemy.getPosition().getY() - avatar.getPosition().getY(), 2)
-                    );
-
-                    if (distance2 <= 15) {
-                        actualEnemy.setContactAvatar(true);
-                        if (lifeLossTimer >= LIFE_LOSS_INTERVAL) {
-                            avatar.setLife(avatar.getLife() - 1);
-                            lifeLossTimer = 0;
-                            if (avatar.getLife() <= 0) {
-                                gameOver = true;
-                            }
-                        }
-                    }else{
-                        actualEnemy.setContactAvatar(false);
-                    }
                     if(distance <= 10 && actualEnemy.getLife()>0){
                         actualEnemy.setLife(enemies.get(i).getLife()-1);
                         bullets.remove(j);
                         return;
                     }
+
+
                     if (distance <= 10 && enemies.get(i).getLife()==0) {
                         Enemy deletedEnemy = enemies.remove(i);
 
@@ -275,48 +278,52 @@ public class ScreeA extends BaseScreen {
             }
 
             for (int i = 0;i<scorpions.size();i++){
-                for (int j = 0; j < bullets.size(); j++) {
-                    final boolean[] enemyCanShoot = {true};
-                    Scorpion sActual = scorpions.get(i);
-                    Bullet actualBullet = bullets.get(j);
-                    double distance2 = Math.sqrt(
-                            Math.pow(scorpions.get(i).getPosition().getX() - avatar.getPosition().getX(), 2) +
-                                    Math.pow(scorpions.get(i).getPosition().getY() - avatar.getPosition().getY(), 2)
+                Scorpion sActual = scorpions.get(i);
+                final boolean[] enemyCanShoot = {true};
+                double distance2 = Math.sqrt(
+                        Math.pow(scorpions.get(i).getPosition().getX() - avatar.getPosition().getX(), 2) +
+                                Math.pow(scorpions.get(i).getPosition().getY() - avatar.getPosition().getY(), 2)
+                );
+                if(distance2 < 150 ){
+
+
+                    scorpions.get(i).setAvatarInRange(true);
+
+
+                    double diffX = avatar.getPosition().getX() - scorpions.get(i).getPosition().getX();
+                    double diffY = avatar.getPosition().getY() - scorpions.get(i).getPosition().getY();
+
+                    Vector diff = new Vector(diffX, diffY);
+
+                    diff.normalize();
+                    diff.setSpeed(4);
+                    //if (enemyCanShoot[0]) {
+                    acidBeans.add(
+                            new AcidBean(canvas, new Vector(sActual.getPosition().getX(), sActual.getPosition().getY()), diff)
                     );
+                    enemyCanShoot[0] = false;
+                    //}
+                    //Duration delay = Duration.seconds(2);
+                        /*Timeline timer = new Timeline(
+                                new KeyFrame(delay, event -> {
+                                    enemyCanShoot[0] = true;
+                                })
+                        );*/
+
+                }else{
+                    scorpions.get(i).setAvatarInRange(false);
+                }
+                for (int j = 0; j < bullets.size(); j++) {
+
+
+                    Bullet actualBullet = bullets.get(j);
+
                     double distance = Math.sqrt(
                             Math.pow(sActual.getPosition().getX() - actualBullet.getPositionX(), 2) +
                                     Math.pow(sActual.getPosition().getY() - actualBullet.getPositionY(), 2)
                     );
 
-                    if(distance2 < 150 ){
 
-
-                        scorpions.get(i).setAvatarInRange(true);
-
-
-                        double diffX = avatar.getPosition().getX() - scorpions.get(i).getPosition().getX();
-                        double diffY = avatar.getPosition().getY() - scorpions.get(i).getPosition().getY();
-
-                        Vector diff = new Vector(diffX, diffY);
-
-                        diff.normalize();
-                        diff.setSpeed(4);
-                        if (enemyCanShoot[0]) {
-                            acidBeans.add(
-                                    new AcidBean(canvas, new Vector(sActual.getPosition().getX(), sActual.getPosition().getY()), diff)
-                            );
-                            enemyCanShoot[0] = false;
-                        }
-                        Duration delay = Duration.seconds(2);
-                        Timeline timer = new Timeline(
-                                new KeyFrame(delay, event -> {
-                                    enemyCanShoot[0] = true;
-                                })
-                        );
-
-                    }else{
-                        scorpions.get(i).setAvatarInRange(false);
-                    }
                     if(distance <= 15 && sActual.getLife()>0){
                         sActual.setLife(scorpions.get(i).getLife()-1);
                         bullets.remove(j);
@@ -331,28 +338,27 @@ public class ScreeA extends BaseScreen {
                     }
                 }
 
-                for(int j = 0;j<acidBeans.size();j++){
+            }
+            for(int j = 0;j<acidBeans.size();j++){
 
-                    AcidBean ac = acidBeans.get(j);
-                    double distance3 = Math.sqrt(
-                            Math.pow(ac.getPositionX() - avatar.getPosition().getX(), 2) +
-                                    Math.pow(ac.getPositionY() - avatar.getPosition().getY(), 2)
-                    );
+                AcidBean ac = acidBeans.get(j);
+                double distance3 = Math.sqrt(
+                        Math.pow(ac.getPositionX() - avatar.getPosition().getX(), 2) +
+                                Math.pow(ac.getPositionY() - avatar.getPosition().getY(), 2)
+                );
 
 
-                    if(distance3<10){
-                        avatar.setLife(avatar.getLife()-1);
-                        if (avatar.getLife() <= 0) {
-                            gameOver = true;
-                        }
-                        acidBeans.remove(j);
-                        return;
+                if(distance3<10){
+                    avatar.setLife(avatar.getLife()-1);
+                    if (avatar.getLife() <= 0) {
+                        gameOver = true;
                     }
-
+                    acidBeans.remove(j);
+                    return;
                 }
 
             }
-            lifeLossTimer += 100;
+            lifeLossTimer += 50;
 
 
             //System.out.println(avatar.getPosition().getX() + "" + avatar.getPosition().getY());
@@ -395,10 +401,9 @@ public class ScreeA extends BaseScreen {
             firebullets.add(
                  new FireBullet(canvas,new Vector(avatar.getPosition().getX(), avatar.getPosition().getY()), diff)
             );
-            System.out.println("here");
             avatar.getBullets().pop();
         }
-        System.out.println(avatar.isFireTypeEquiped());
+
 
     }
     public void restar(){
@@ -408,22 +413,26 @@ public class ScreeA extends BaseScreen {
         avatar.setPosition(new Vector(970, 440));
         avatar.recharge();
         gameOver = false;
-        for (Enemy e:enemies) {
-            e.setAlive(true);
-            e.setLife(2);
-            int positionx = (int) (Math.random() * 1221) + 350;
-            int positionY = (int) (Math.random() * 671) + 110;
-            Vector v = new Vector(positionx,positionY);
-            e.setPosition(v);
+        enemies.clear();
+        scorpions.clear();
+        bullets.clear();
+        acidBeans.clear();
+        firebullets.clear();
+        generateEnemies();
+        for (Enemy enemy : enemies) {
+            enemy.start();
         }
-        for(Scorpion s:scorpions){
-            s.setAlive(true);
-            s.setLife(3);
-            int positionx = (int) (Math.random() * 1221) + 350;
-            int positionY = (int) (Math.random() * 671) + 110;
-            Vector v = new Vector(positionx,positionY);
-            s.setPosition(v);
+        for(Scorpion s :scorpions){
+            s.start();
         }
+        int positionx = (int) (Math.random() * 161) + 320;
+        int positionY = (int) (Math.random() * 441) + 110;
+        int positionx2 = (int) (Math.random() * 121) + 1460;
+        int positionY2 = (int) (Math.random() * 441) + 110;
+        Vector v2 = new Vector(positionx2,positionY2);
+        Vector v = new Vector(positionx,positionY);
+        bulletPacks.get(0).setPosition(v);
+        bulletPacks.get(1).setPosition(v2);
         for (BulletPack bp: bulletPacks) {
             bp.setState(1);
         }
