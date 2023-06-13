@@ -3,13 +3,10 @@ package com.example.gamedemo.model;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-public class Bullet {
-
-    // Elementos graficos
+public class AcidBean {
     private Canvas canvas;
     private GraphicsContext graphicsContext;
 
@@ -23,7 +20,7 @@ public class Bullet {
     private int speed;
 
     private int state;
-    public Bullet(Canvas canvas, Vector position, Vector direction) {
+    public AcidBean(Canvas canvas, Vector position, Vector direction) {
         this.canvas = canvas;
         this.graphicsContext = canvas.getGraphicsContext2D();
         this.position = position;

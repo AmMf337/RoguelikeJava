@@ -41,17 +41,21 @@ public class Avatar {
     private boolean downPressed;
     private boolean leftPressed;
     private boolean rightPressed;
-    private boolean isAttacking;
     private Stack<Integer> bullets;
 
+    private boolean FireTypeEquiped;
+
+    private  boolean hasNormalBullets;
+    private boolean hasFireBullets;
     public Avatar(Canvas canvas){
         this.state = 0;
         this.canvas = canvas;
         this.graphicsContext = canvas.getGraphicsContext2D();
         this.life = 7;
+        this.hasNormalBullets = false;
+        this.hasFireBullets = false;
         this.position = new Vector(970, 440);
         bullets = new Stack<>();
-        recharge();
         this.posX = 100;
         this.posY = 100;
         runLeft = new ArrayList<>();
@@ -113,6 +117,14 @@ public class Avatar {
         }
     }
 
+    public boolean isFireTypeEquiped() {
+        return FireTypeEquiped;
+    }
+
+    public void setFireTypeEquiped(boolean fireTypeEquiped) {
+        FireTypeEquiped = fireTypeEquiped;
+    }
+
     public void onKeyPressed(KeyEvent event){
         switch (event.getCode()){
             case W:
@@ -134,6 +146,13 @@ public class Avatar {
             case R:
                 recharge();
                 break;
+            case G:
+                FireTypeEquiped=false;
+                break;
+            case F:
+                FireTypeEquiped=true;
+                break;
+
         }
     }
 
@@ -156,7 +175,10 @@ public class Avatar {
     }
     public void recharge(){
         for(int i =0;i<5;i++){
-            if(bullets.size()<=4){
+            if(bullets.size()<=4 && hasNormalBullets){
+                bullets.add(i);
+            }
+            if( bullets.size()<=4 && hasFireBullets){
                 bullets.add(i);
             }
         }
@@ -164,16 +186,28 @@ public class Avatar {
 
     public void onMove(){
         if (upPressed){
-            position.setY(position.getY() - 10);
+            if(position.getY() - 10>110 ){
+                position.setY(position.getY() - 10);
+            }
+
         }
         if (downPressed){
-            position.setY(position.getY() + 10);
+            if( position.getY() + 10<790){
+                position.setY(position.getY() + 10);
+            }
+
         }
         if (leftPressed){
-            position.setX(position.getX() - 10);
+            if(position.getX() - 10>320){
+                position.setX(position.getX() - 10);
+            }
+
         }
         if (rightPressed){
-            position.setX(position.getX() + 10);
+            if( position.getX() + 10<1580){
+                position.setX(position.getX() + 10);
+            }
+
         }
     }
 
@@ -203,5 +237,25 @@ public class Avatar {
 
     public void setBullets(Stack<Integer> bullets) {
         this.bullets = bullets;
+    }
+
+    public void setPosition(Vector position) {
+        this.position = position;
+    }
+
+    public boolean isHasNormalBullets() {
+        return hasNormalBullets;
+    }
+
+    public void setHasNormalBullets(boolean hasNormalBullets) {
+        this.hasNormalBullets = hasNormalBullets;
+    }
+
+    public boolean isHasFireBullets() {
+        return hasFireBullets;
+    }
+
+    public void setHasFireBullets(boolean hasFireBullets) {
+        this.hasFireBullets = hasFireBullets;
     }
 }

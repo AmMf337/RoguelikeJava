@@ -32,13 +32,13 @@ public class Enemy extends Thread{
         this.canvas = canvas;
         state =0;
         frame =0;
-        life = 3;
+        life = 2;
         walkFront = new ArrayList<>();
         this.attackFront = new ArrayList<>();
         this.graphicsContext = canvas.getGraphicsContext2D();
         this.position = position;
         this.isAlive = true;
-        contactAvatar = false;
+        this.contactAvatar = false;
         for(int i = 0; i <= 9; i++){
             Image image = new Image(getClass().getResourceAsStream("/animations.enemy/WalkFront/WalkFront"+i+".png"));
             walkFront.add(image);
@@ -48,23 +48,26 @@ public class Enemy extends Thread{
             attackFront.add(image);
         }
     }
-    public void behavior(Vector avatarPosition){
+    public void behavior(Vector avatarPosition,double distance){
+
         if(contactAvatar){
            state = 2;
-        }else{
+
+        }else if(distance<300){
             if(avatarPosition.getX()>this.position.getX()){
-                position.setX(position.getX()+3);
+                position.setX(position.getX()+5);
             }else if(avatarPosition.getX()<this.position.getX()){
-                position.setX(position.getX()-3);
+                position.setX(position.getX()-5);
             }
             if(avatarPosition.getY()>this.position.getY()){
-                position.setY(position.getY()+3);
+                position.setY(position.getY()+5);
             }else if(avatarPosition.getY()<this.position.getY()){
-                position.setY(position.getY()-3);
+                position.setY(position.getY()-5);
             }
         }
-        contactAvatar = false;
+
     }
+
     public Vector getPosition() {
         return position;
     }
@@ -75,14 +78,14 @@ public class Enemy extends Thread{
 
     public void paint() {
         if (state == 0){
+
             graphicsContext.drawImage(walkFront.get(frame%9), position.getX(), position.getY());
             frame++;
         }
         if (state == 2){
             graphicsContext.drawImage(attackFront.get(frame%7), position.getX(), position.getY());
             frame++;
-            contactAvatar = false;
-            state =0;
+            state = 0;
         }
     }
 
@@ -115,5 +118,14 @@ public class Enemy extends Thread{
 
     public void setLife(int life) {
         this.life = life;
+    }
+
+
+    public int getStateInt() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

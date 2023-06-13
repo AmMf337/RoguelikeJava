@@ -13,11 +13,9 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
-
     @FXML
     private Canvas canvas;
-    @FXML
-    private Canvas canvas2;
+
     private boolean isRunning;
 
     private boolean changeScreen;
@@ -69,16 +67,8 @@ public class MainController implements Initializable {
             screens.get(SCREEN).onMousePressed(event);
         });
         canvas.setOnMousePressed(event -> {
-            if (SCREEN == 0) {
-                screens.get(0).onMousePressed(event);
-            } else {
-                screens.get(SCREEN).onMousePressed(event);
-            }
+            screens.get(SCREEN).onMousePressed(event);
         });
-        if (SCREEN == 0 && screens.get(SCREEN).isBottonPressed1()) {
-            screens.add(new ScreeA(this.canvas));
-            changeScreen(1); // Cambia a la pantalla ScreeA
-        }
 
     }
 
@@ -89,9 +79,5 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
-    public void changeScreen(int screenIndex) {
-        if (screenIndex >= 0 && screenIndex < screens.size()) {
-            SCREEN = screenIndex;
-        }
-    }
+
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Scorpion extends  Thread{
     private Canvas canvas;
-
+    private int life;
     private GraphicsContext graphicsContext;
 
     private Vector position;
@@ -30,10 +30,12 @@ public class Scorpion extends  Thread{
 
     public Scorpion(Canvas canvas, Vector position ){
         this.canvas = canvas;
-        state =0;
+        state =1;
+        life = 3;
         frame =0;
         walk = new ArrayList<>();
         this.attack = new ArrayList<>();
+        this.idle = new ArrayList<>();
         this.graphicsContext = canvas.getGraphicsContext2D();
         this.position = position;
         this.isAlive = true;
@@ -46,23 +48,13 @@ public class Scorpion extends  Thread{
             Image image = new Image(getClass().getResourceAsStream("/scorpion/attack/ScorpionAttack"+i+".png"));
             attack.add(image);
         }
+        for(int i = 0; i <= 5; i++){
+            Image image = new Image(getClass().getResourceAsStream("/scorpion/idle/ScorpionIdle"+i+".png"));
+            idle.add(image);
+        }
     }
     public void behavior(Vector avatarPosition){
-        if(avatarInRange){
-            state = 2;
-        }else{
-            if(avatarPosition.getX()>this.position.getX()){
-                position.setX(position.getX()+3);
-            }else if(avatarPosition.getX()<this.position.getX()){
-                position.setX(position.getX()-3);
-            }
-            if(avatarPosition.getY()>this.position.getY()){
-                position.setY(position.getY()+3);
-            }else if(avatarPosition.getY()<this.position.getY()){
-                position.setY(position.getY()-3);
-            }
-        }
-        avatarInRange = false;
+
     }
     public Vector getPosition() {
         return position;
@@ -73,16 +65,18 @@ public class Scorpion extends  Thread{
     }
 
     public void paint() {
-        if (state == 0){
+        if (avatarInRange){
+            graphicsContext.drawImage(attack.get(frame%2), position.getX(), position.getY());
+        }else{
+            graphicsContext.drawImage(idle.get(frame%6), position.getX(), position.getY());
+        }
+        frame++;
+        /*if(state==6){
+
             graphicsContext.drawImage(walk.get(frame%6), position.getX(), position.getY());
             frame++;
-        }
-        if (state == 2){
-            graphicsContext.drawImage(attack.get(frame%2), position.getX(), position.getY());
-            frame++;
-            avatarInRange = false;
-            state =0;
-        }
+        }*/
+
     }
 
     @Override
@@ -106,5 +100,21 @@ public class Scorpion extends  Thread{
 
     public void setPosition(Vector position) {
         this.position = position;
+    }
+    public int getLife() {
+        return life;
+    }
+
+    public void setLife(int life) {
+        this.life = life;
+    }
+
+
+    public int getStateInt() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

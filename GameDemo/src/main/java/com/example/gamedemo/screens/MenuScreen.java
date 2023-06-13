@@ -1,5 +1,6 @@
 
 package com.example.gamedemo.screens;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -16,8 +17,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-public class MenuScreen extends BaseScreen {
+import java.util.Objects;
 
+public class MenuScreen extends BaseScreen {
 
     private boolean bottonPressed1;
     public MenuScreen(Canvas canvas) {
@@ -28,10 +30,10 @@ public class MenuScreen extends BaseScreen {
 
     @Override
     public void paint() {
-        graphicsContext.setFill(Color.TRANSPARENT);
-        graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        Image buttonImage = new Image(getClass().getResourceAsStream("/ImagesUi/button1.png"));
-        graphicsContext.drawImage(buttonImage,920,440);
+        graphicsContext.setFill(Color.BLACK);
+        Image buttonImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ImagesUi/button1.png")));
+
+        graphicsContext.drawImage(buttonImage, 928, 260);
 
     }
 
@@ -50,10 +52,9 @@ public class MenuScreen extends BaseScreen {
         double mouseX = event.getX();
         double mouseY = event.getY();
 
-
         if (mouseX >= 940 && mouseX <= 940 + 105 &&
                 mouseY >= 440 && mouseY <= 440  + 33 ) {
-            bottonPressed1 = true;
+            bottonPressed1 =true;
             System.out.println("¡Se hizo clic en el botón del menú!");
         }
     }
@@ -70,5 +71,8 @@ public class MenuScreen extends BaseScreen {
 
     public void setBottonPressed1(boolean bottonPressed1) {
         this.bottonPressed1 = bottonPressed1;
+    }
+
+    public void onOpenLevel1(ActionEvent actionEvent) {
     }
 }

@@ -3,18 +3,16 @@ package com.example.gamedemo.model;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class Bullet {
-
-    // Elementos graficos
+public class FireBullet {
     private Canvas canvas;
     private GraphicsContext graphicsContext;
 
     private int frame;
-    private ArrayList<Image> bulletAnimationRight;
+    private ArrayList<Image> bulletAnimation;
 
     // referencias espaciales
     private Vector position;
@@ -23,24 +21,24 @@ public class Bullet {
     private int speed;
 
     private int state;
-    public Bullet(Canvas canvas, Vector position, Vector direction) {
+    public FireBullet(Canvas canvas, Vector position, Vector direction) {
         this.canvas = canvas;
         this.graphicsContext = canvas.getGraphicsContext2D();
         this.position = position;
         this.direction =  direction;
-        this.size = 20;
+        this.size = 1;
         this.speed = 10;
         frame = 0;
-        bulletAnimationRight = new ArrayList<>();
-        for(int i = 0; i <= 3; i++){
-            Image image = new Image(getClass().getResourceAsStream("/animations.bullet/BulletRight"+i+".png"));
-            bulletAnimationRight.add(image);
+        bulletAnimation = new ArrayList<>();
+        for(int i = 0; i <= 5; i++){
+            Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/FireBullet/Fireball" + i + ".png")));
+            bulletAnimation.add(image);
         }
     }
 
     public void paint(){
         if (state == 0){
-            graphicsContext.drawImage(bulletAnimationRight.get(frame%4), position.getX(), position.getY());
+            graphicsContext.drawImage(bulletAnimation.get(frame%6), position.getX(), position.getY());
             frame++;
         }
         position.setX(position.getX() + direction.getX());
